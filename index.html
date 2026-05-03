@@ -1,0 +1,14 @@
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get("email");
+
+  if (email) {
+    fetch("https://formspree.io/f/xaqvqzdz", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    }).then(() => {
+      window.location.href = "https://formspree.io/thanks?language=en";
+    });
+  }
+</script>
