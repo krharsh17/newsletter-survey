@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Integration Request</title>
+<title>Lead Enrichment Survey</title>
 <style>
-  :root { color-scheme: light dark; }
+  :root { color-scheme: light; }
   * { box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -14,7 +14,7 @@
     color: #111;
   }
   .card {
-    width: 100%; max-width: 480px; background: #fff; border-radius: 14px;
+    width: 100%; max-width: 520px; background: #fff; border-radius: 14px;
     box-shadow: 0 14px 40px rgba(0,0,0,.08); padding: 32px;
     border: 1px solid rgba(227,17,46,.12);
   }
@@ -26,43 +26,91 @@
     width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px;
     font: inherit; background: #fff; color: #111;
   }
-  textarea { min-height: 110px; resize: vertical; }
+  textarea { min-height: 2.5em; resize: vertical; }
   input::placeholder, textarea::placeholder { color: #8f8f8f; }
   input:focus, select:focus, textarea:focus {
-    outline: 2px solid rgba(227,17,46,.25); outline-offset: 1px; border-color: #E3112E;
+    border-color: #E3112E;
+    outline: none;
   }
   button {
     margin-top: 20px; width: 100%; padding: 12px 16px; border: 0; border-radius: 8px;
     background: #E3112E; color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer;
   }
-  button:hover { background: #c70f28; }
+  button:hover:not(:disabled) { background: #c70f28; }
+  button:disabled { background: #ccc; color: #666; cursor: not-allowed; }
   .ok { display: none; margin-top: 18px; padding: 12px; background: #d1f7dd; color: #0f5c38; border-radius: 8px; }
+  input[type="radio"], input[type="checkbox"] {
+    width: auto; margin-right: 8px; accent-color: #ff6b6b;
+  }
+  .checkbox-group {
+    display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0;
+  }
+  .radio-group {
+    display: flex; gap: 16px; margin: 8px 0;
+  }
+  .radio-group label, .checkbox-group label {
+    display: flex; align-items: center; font-weight: normal; margin: 0;
+  }
+  .checkbox-group label {
+    display: flex; align-items: center; margin: 0; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 12px;
+  }
+  .checkbox-group label:hover {
+    border-color: #E3112E;
+    transition: border-color 0.2s ease;
+  }
+
+  .conditional {
+    opacity: 0; visibility: hidden; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0.4s ease;
+  }
+  .conditional.show {
+    opacity: 1; visibility: visible; max-height: 1000px;
+  }
+  .other-input { display: none; margin-top: 8px; }
 </style>
 </head>
 <body>
-  <div style="width: 100%; max-width: 480px;">
+  <div style="width: 100%; max-width: 520px;">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 40px; display: block;" />
     <div class="card">
-      <h1>How can we help?</h1>
-    <p class="lead">Tell us how we can make lead enrichment simpler for you.</p>
+      <h1>Lead Enrichment Survey</h1>
+    <p class="lead">Help us understand your lead enrichment needs.</p>
 
     <form id="f" action="https://formspree.io/f/xaqvqzdz" method="POST">
       <label for="email">Email <span class="req">*</span></label>
       <input id="email" name="email" type="email" required autocomplete="email" />
 
-      <label for="integration">New Integration <span class="req">*</span></label>
-      <select id="integration" name="integration" required>
-        <option value="" disabled selected>Select an option…</option>
-        <option value="Clay Integration">Clay Integration</option>
-        <option value="Apollo Integration">Apollo Integration</option>
-        <option value="Native Lead Enrichment in Formspree">Native Lead Enrichment in Formspree</option>
-      </select>
+      <label>Do you enrich your leads? <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="enrich_leads" value="yes" required /> Yes</label>
+        <label><input type="radio" name="enrich_leads" value="no" /> No</label>
+      </div>
 
-      <label for="notes">Notes <span style="color:#888;font-weight:400">(optional)</span></label>
-      <textarea id="notes" name="notes" placeholder="Anything we should know?"></textarea>
+      <div id="yes-section" class="conditional">
+        <label>What tools/platforms do you currently use to enrich leads? <span class="req">*</span></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="tools" value="HubSpot" /> HubSpot</label><br>
+          <label><input type="checkbox" name="tools" value="Apollo" /> Apollo</label><br>
+          <label><input type="checkbox" name="tools" value="Clay" /> Clay</label><br>
+          <label><input type="checkbox" name="tools" value="ZoomInfo" /> ZoomInfo</label><br>
+          <label><input type="checkbox" name="tools" value="Cognism" /> Cognism</label><br>
+          <label><input type="checkbox" name="tools" value="Other" id="other-checkbox" /> Other</label>
+          <input type="text" id="other-tool" name="other_tool" class="other-input" placeholder="Please specify" />
+        </div>
+
+        <label for="painful">What's the most annoying/painful part of enriching your leads today? <span style="color:#888;font-weight:400">(optional)</span></label>
+        <textarea id="painful" name="painful"></textarea>
+
+        <label for="thoughts">Any other thoughts? <span style="color:#888;font-weight:400">(optional)</span></label>
+        <textarea id="thoughts" name="thoughts"></textarea>
+      </div>
+
+      <div id="no-section" class="conditional">
+        <label for="why_not">Would you like to tell us why? <span style="color:#888;font-weight:400">(optional)</span></label>
+        <input id="why_not" name="why_not" type="text" placeholder="e.g., too complex, unaware of benefits, price, etc." />
+      </div>
 
       <button type="submit">Submit</button>
-      <div id="ok" class="ok">Thanks! Your request has been submitted.</div>
+      <div id="ok" class="ok" style="display: none;">Thanks! Your response has been submitted.</div>
     </form>
   </div>
   </div>
@@ -73,9 +121,54 @@
   const email = params.get("email");
   if (email) document.getElementById("email").value = email;
 
+  // Toggle sections based on enrich_leads radio
+  const enrichRadios = document.querySelectorAll('input[name="enrich_leads"]');
+  const yesSection = document.getElementById('yes-section');
+  const noSection = document.getElementById('no-section');
+  const submitBtn = document.querySelector('button[type="submit"]');
+
+  function updateSubmitButton() {
+    const checked = document.querySelector('input[name="enrich_leads"]:checked');
+    submitBtn.disabled = !checked;
+  }
+
+  enrichRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'yes') {
+        yesSection.classList.add('show');
+        noSection.classList.remove('show');
+      } else if (radio.value === 'no') {
+        yesSection.classList.remove('show');
+        noSection.classList.add('show');
+      }
+      updateSubmitButton();
+    });
+  });
+
+  // Initially disable submit
+  updateSubmitButton();
+
+  // Toggle other input
+  const otherCheckbox = document.getElementById('other-checkbox');
+  const otherInput = document.getElementById('other-tool');
+  otherCheckbox.addEventListener('change', () => {
+    otherInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+  });
+
   // AJAX submit so the user stays on the page
   const form = document.getElementById("f");
   form.addEventListener("submit", async (e) => {
+    // Custom validation
+    const enrichValue = document.querySelector('input[name="enrich_leads"]:checked');
+    if (enrichValue && enrichValue.value === 'yes') {
+      const toolsChecked = document.querySelectorAll('input[name="tools"]:checked');
+      if (toolsChecked.length === 0) {
+        alert("Please select at least one tool/platform.");
+        e.preventDefault();
+        return;
+      }
+    }
+
     e.preventDefault();
     const data = new FormData(form);
     try {
@@ -88,6 +181,10 @@
         form.reset();
         if (email) document.getElementById("email").value = email;
         document.getElementById("ok").style.display = "block";
+        // Hide sections after reset
+        yesSection.classList.remove('show');
+        noSection.classList.remove('show');
+        otherInput.style.display = 'none';
       } else {
         alert("Submission failed. Please try again.");
       }
