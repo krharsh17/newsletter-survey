@@ -79,14 +79,14 @@
       <label for="email">Email <span class="req">*</span></label>
       <input id="email" name="email" type="email" required autocomplete="email" />
 
-      <label>Do you enrich your leads? <span class="req">*</span></label>
+      <label>Do you currently enrich your leads? <span class="req">*</span></label>
       <div class="radio-group">
         <label><input type="radio" name="enrich_leads" value="yes" required /> Yes</label>
         <label><input type="radio" name="enrich_leads" value="no" /> No</label>
       </div>
 
       <div id="yes-section" class="conditional">
-        <label>What tools/platforms do you currently use to enrich leads? <span class="req">*</span></label>
+        <label>What tools/platforms do you currently use? <span class="req">*</span></label>
         <div class="checkbox-group">
           <label><input type="checkbox" name="tools" value="HubSpot" /> HubSpot</label><br>
           <label><input type="checkbox" name="tools" value="Apollo" /> Apollo</label><br>
@@ -97,7 +97,7 @@
           <input type="text" id="other-tool" name="other_tool" class="other-input" placeholder="Please specify" />
         </div>
 
-        <label for="painful">What's the most annoying/painful part of enriching your leads today? <span style="color:#888;font-weight:400">(optional)</span></label>
+        <label for="painful">What's the most annoying/painful part of lead enrichment? <span style="color:#888;font-weight:400">(optional)</span></label>
         <textarea id="painful" name="painful"></textarea>
 
         <label for="thoughts">Any other thoughts? <span style="color:#888;font-weight:400">(optional)</span></label>
@@ -105,7 +105,7 @@
       </div>
 
       <div id="no-section" class="conditional">
-        <label for="why_not">Would you like to tell us why? <span style="color:#888;font-weight:400">(optional)</span></label>
+        <label for="why_not">Why not?<span style="color:#888;font-weight:400">(optional)</span></label>
         <input id="why_not" name="why_not" type="text" placeholder="e.g., too complex, unaware of benefits, price, etc." />
       </div>
 
