@@ -18,8 +18,8 @@
     box-shadow: 0 14px 40px rgba(0,0,0,.08); padding: 32px;
     border: 1px solid rgba(227,17,46,.12);
   }
-  h1 { margin: 0 0 6px; font-size: 1.8rem; color: #111; }
-  p.lead { margin: 0 0 22px; color: #33333380; font-size: .95rem; }
+  h1 { margin: 0 0 6px; font-size: 2.4rem; color: #111; }
+  p.lead { margin: 0 0 32px; color: #33333380; font-size: .95rem; letter-spacing: 0.015em; }
   label { display: block; font-weight: 600; margin: 14px 0 6px; font-size: .9rem; color: #111; }
   .req { color: #E3112E; }
   input, select, textarea {
@@ -71,12 +71,11 @@
 <body>
   <div style="width: 100%; max-width: 520px;">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 20px; display: block;" />
-    <div class="card">
-      <h1>How do you enrich your leads?</h1>
+    <h1>Lets do more with leads!</h1>
     <p class="lead">We're working on tools that help website builders, small businesses, and marketers create effective lead funnels. We'd love to hear from you!</p>
-
+    <div class="card">
     <form id="f" action="https://formspree.io/f/xaqvqzdz" method="POST">
-      <label for="email">Email <span class="req">*</span></label>
+      <label style="margin-top: 0" for="email">Email <span class="req">*</span></label>
       <input id="email" name="email" type="email" required autocomplete="email" />
 
       <label>Do you currently enrich your leads? <span class="req">*</span></label>
