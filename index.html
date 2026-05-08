@@ -92,6 +92,7 @@
     <p class="lead">We're working on tools that help website builders, small businesses, and marketers create effective lead funnels. We'd love to hear from you!</p>
     <div class="card">
     <form id="f" action="https://formspree.io/f/xaqvqzdz" method="POST">
+      <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
 
       <label>Do you currently enrich your leads? <span class="req">*</span></label>
       <div class="radio-group">
@@ -133,7 +134,9 @@
   // Pre-fill email from ?email= URL param
   const params = new URLSearchParams(location.search);
   const email = params.get("email");
+  const ajsUid = params.get("ajs_uid");
   if (email) document.getElementById("email").value = email;
+  if (ajsUid) document.getElementById("ajs_uid").value = ajsUid;
 
   // Toggle sections based on enrich_leads radio
   const enrichRadios = document.querySelectorAll('input[name="enrich_leads"]');
