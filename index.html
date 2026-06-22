@@ -20,7 +20,8 @@
 </head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Lead Enrichment Survey</title>
+<title>Help us build smarter autoresponse | Formspree</title>
+<link rel="icon" type="image/x-icon" href="https://formspree.io/img/favicon.ico" />
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -83,51 +84,64 @@
     opacity: 1; visibility: visible; max-height: 1000px;
   }
   .other-input { display: none; margin-top: 8px; }
+  .radio-option-group { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .radio-option-group label {
+    display: flex; align-items: center; font-weight: normal; margin: 0;
+    padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 12px; cursor: pointer;
+  }
+  .radio-option-group label:hover { border-color: #E3112E; transition: border-color 0.2s ease; }
+  .radio-option-group input[type="radio"] { accent-color: #E3112E; }
 </style>
 </head>
 <body>
   <div style="width: 100%; max-width: 520px;">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 20px; display: block;" />
-    <h1>Lets do more with leads!</h1>
-    <p class="lead">We're working on tools that help website builders, small businesses, and marketers create effective lead funnels. We'd love to hear from you!</p>
+    <h1>Help us build smarter autoresponse</h1>
+    <p class="lead">We're exploring AI autoresponse built directly into Formspree. Your feedback shapes what we build!</p>
     <div class="card">
-    <form id="f" action="https://formspree.io/f/xaqvqzdz" method="POST">
+    <form id="f" action="https://formspree.io/f/mdarozkd" method="POST">
       <input type="hidden" id="email" name="email" value="" />
       <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
 
-      <label>Do you currently enrich your leads? <span class="req">*</span></label>
+      <label>Would you use AI autoresponse if it were built into Formspree? <span class="req">*</span></label>
       <div class="radio-group">
-        <label><input type="radio" name="enrich_leads" value="yes" required /> Yes</label>
-        <label><input type="radio" name="enrich_leads" value="no" /> No</label>
+        <label><input type="radio" name="use_ai_autoresponse" value="yes" required /> Yes</label>
+        <label><input type="radio" name="use_ai_autoresponse" value="no" /> No</label>
       </div>
 
       <div id="yes-section" class="conditional">
-        <label>What tools/platforms do you use? <span class="req">*</span></label>
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="tools" value="HubSpot" /> HubSpot</label><br>
-          <label><input type="checkbox" name="tools" value="Apollo" /> Apollo</label><br>
-          <label><input type="checkbox" name="tools" value="Clay" /> Clay</label><br>
-          <label><input type="checkbox" name="tools" value="ZoomInfo" /> ZoomInfo</label><br>
-          <label><input type="checkbox" name="tools" value="Cognism" /> Cognism</label><br>
-          <label><input type="checkbox" name="tools" value="Other" id="other-checkbox" /> Other</label>
-          <input type="text" id="other-tool" name="other_tool" class="other-input" placeholder="Please specify" />
+        <label>What's your biggest hesitation with the Zapier/Lindy approach? <span class="req">*</span></label>
+        <div class="radio-option-group">
+          <label><input type="radio" name="hesitation" value="Too many tools to manage" /> Too many tools to manage</label>
+          <label><input type="radio" name="hesitation" value="Cost of extra tools" /> Cost of extra tools</label>
+          <label><input type="radio" name="hesitation" value="Don't trust AI oversight" /> Don't trust AI oversight</label>
+          <label><input type="radio" name="hesitation" value="Haven't tried it yet" /> Haven't tried it yet</label>
+          <label><input type="radio" name="hesitation" value="No hesitation—will try it" /> No hesitation—will try it</label>
         </div>
 
-        <label for="painful">What's the most annoying/painful part of lead enrichment? <span style="color:#888;font-weight:400">(optional)</span></label>
-        <textarea id="painful" name="painful"></textarea>
-
-        <label for="thoughts">Any other thoughts? <span style="color:#888;font-weight:400">(optional)</span></label>
-        <textarea id="thoughts" name="thoughts"></textarea>
+        <label>What would you want Formspree's native version to do? <span class="req">*</span></label>
+        <div class="radio-option-group">
+          <label><input type="radio" name="native_behavior" value="Draft for me to review" /> Draft for me to review</label>
+          <label><input type="radio" name="native_behavior" value="Auto-send simple, draft and wait for complex" /> Auto-send simple response, draft and wait for approval for complex ones</label>
+          <label><input type="radio" name="native_behavior" value="Auto-send everything" /> Auto-send everything</label>
+          <label><input type="radio" name="native_behavior" value="Simple acknowledgement response only" /> Simple acknowledgement response only</label>
+        </div>
       </div>
 
       <div id="no-section" class="conditional">
-        <label for="why_not">Why not? <span style="color:#888;font-weight:400">(optional)</span></label>
-        <input id="why_not" name="why_not" type="text" placeholder="e.g., too complex, unaware of benefits, price, etc." />
+        <label>What's the main reason you wouldn't use it? <span class="req">*</span></label>
+        <div class="radio-option-group">
+          <label><input type="radio" name="no_reason" value="Don't want AI in replies" /> Don't want AI in replies</label>
+          <label><input type="radio" name="no_reason" value="Prefer a separate tool" /> Prefer a separate tool</label>
+          <label><input type="radio" name="no_reason" value="Volume too low to need it" /> Volume too low to need it</label>
+          <label><input type="radio" name="no_reason" value="Other" id="other-radio" /> Other (please specify)</label>
+        </div>
+        <input type="text" id="other-reason" name="other_reason" class="other-input" placeholder="Please specify" />
       </div>
 
-      <button type="submit">Submit</button>
-      <div id="ok" class="ok" style="display: none;">Thanks! Your response has been submitted.</div>
+      <button type="submit" disabled>Submit</button>
     </form>
+    <div id="ok" class="ok" style="display: none;">Thanks! Your response has been submitted.</div>
   </div>
   </div>
 
@@ -139,23 +153,30 @@
   if (email) document.getElementById("email").value = email;
   if (ajsUid) document.getElementById("ajs_uid").value = ajsUid;
 
-  // Toggle sections based on enrich_leads radio
-  const enrichRadios = document.querySelectorAll('input[name="enrich_leads"]');
+  const q1Radios = document.querySelectorAll('input[name="use_ai_autoresponse"]');
   const yesSection = document.getElementById('yes-section');
   const noSection = document.getElementById('no-section');
   const submitBtn = document.querySelector('button[type="submit"]');
 
   function updateSubmitButton() {
-    const checked = document.querySelector('input[name="enrich_leads"]:checked');
-    submitBtn.disabled = !checked;
+    const q1 = document.querySelector('input[name="use_ai_autoresponse"]:checked');
+    if (!q1) { submitBtn.disabled = true; return; }
+    if (q1.value === 'yes') {
+      const hesitation = document.querySelector('input[name="hesitation"]:checked');
+      const native = document.querySelector('input[name="native_behavior"]:checked');
+      submitBtn.disabled = !(hesitation && native);
+    } else {
+      const noReason = document.querySelector('input[name="no_reason"]:checked');
+      submitBtn.disabled = !noReason;
+    }
   }
 
-  enrichRadios.forEach(radio => {
+  q1Radios.forEach(radio => {
     radio.addEventListener('change', () => {
       if (radio.value === 'yes') {
         yesSection.classList.add('show');
         noSection.classList.remove('show');
-      } else if (radio.value === 'no') {
+      } else {
         yesSection.classList.remove('show');
         noSection.classList.add('show');
       }
@@ -163,31 +184,22 @@
     });
   });
 
-  // Initially disable submit
-  updateSubmitButton();
+  document.querySelectorAll('input[name="hesitation"], input[name="native_behavior"], input[name="no_reason"]').forEach(r => {
+    r.addEventListener('change', updateSubmitButton);
+  });
 
-  // Toggle other input
-  const otherCheckbox = document.getElementById('other-checkbox');
-  const otherInput = document.getElementById('other-tool');
-  otherCheckbox.addEventListener('change', () => {
-    otherInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+  // Toggle "Other" text input in No section
+  const otherRadio = document.getElementById('other-radio');
+  const otherInput = document.getElementById('other-reason');
+  otherRadio.addEventListener('change', () => {
+    otherInput.style.display = otherRadio.checked ? 'block' : 'none';
   });
 
   // AJAX submit so the user stays on the page
   const form = document.getElementById("f");
   form.addEventListener("submit", async (e) => {
-    // Custom validation
-    const enrichValue = document.querySelector('input[name="enrich_leads"]:checked');
-    if (enrichValue && enrichValue.value === 'yes') {
-      const toolsChecked = document.querySelectorAll('input[name="tools"]:checked');
-      if (toolsChecked.length === 0) {
-        alert("Please select at least one tool/platform.");
-        e.preventDefault();
-        return;
-      }
-    }
-
     e.preventDefault();
+    submitBtn.disabled = true;
     const data = new FormData(form);
     try {
       const res = await fetch(form.action, {
@@ -196,15 +208,11 @@
         headers: { Accept: "application/json" },
       });
       if (res.ok) {
-        form.reset();
-        if (email) document.getElementById("email").value = email;
+        form.style.display = 'none';
         document.getElementById("ok").style.display = "block";
-        // Hide sections after reset
-        yesSection.classList.remove('show');
-        noSection.classList.remove('show');
-        otherInput.style.display = 'none';
       } else {
         alert("Submission failed. Please try again.");
+        submitBtn.disabled = false;
       }
     } catch {
       alert("Network error. Please try again.");
