@@ -12,7 +12,7 @@
 </head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>How do you run surveys? | Formspree</title>
+<title>How do you collect information? | Formspree</title>
 <link rel="icon" type="image/x-icon" href="https://formspree.io/img/favicon.ico" />
 <style>
   :root { color-scheme: light; }
@@ -28,274 +28,144 @@
     background: #fff; border-radius: 14px;
     box-shadow: 0 14px 40px rgba(0,0,0,.08); padding: 32px;
     border: 1px solid rgba(227,17,46,.12);
-    position: relative; overflow: hidden;
-  }
-  .progress {
-    position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #f3f4f6;
-  }
-  .progress-bar {
-    height: 100%; background: #E3112E; width: 0%;
-    transition: width 0.3s ease;
   }
   h1 { margin: 0 0 12px; font-size: 2rem; color: #111; text-align: center; }
   p.lead { margin: 0 0 24px; color: #33333380; font-size: .95rem; letter-spacing: 0.015em; line-height: 1.5; text-align: center; }
-  .question { font-weight: 600; font-size: 1.15rem; margin: 0 0 6px; color: #111; line-height: 1.35; }
-  .hint { margin: 0 0 16px; color: #6b7280; font-size: .85rem; }
-  .req { color: #E3112E; }
-  input, select, textarea {
+  .question { font-weight: 600; font-size: 1.1rem; margin: 0 0 6px; color: #111; line-height: 1.35; }
+  .hint { margin: 0 0 12px; color: #6b7280; font-size: .85rem; }
+  input, textarea {
     width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px;
     font: inherit; background: #fff; color: #111;
   }
-  textarea { min-height: 3.5em; resize: vertical; }
-  input::placeholder, textarea::placeholder { color: #8f8f8f; }
-  input:focus, select:focus, textarea:focus {
+  input::placeholder { color: #8f8f8f; }
+  input:focus, textarea:focus {
     border-color: #E3112E;
     outline: none;
   }
-  input[type="radio"], input[type="checkbox"] {
+  input[type="checkbox"] {
     width: auto; margin-right: 8px; accent-color: #E3112E;
   }
-  .radio-option-group, .checkbox-option-group { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
-  .radio-option-group label, .checkbox-option-group label {
+  .checkbox-option-group { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .checkbox-option-group label {
     display: flex; align-items: center; font-weight: normal; margin: 0;
     padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 12px; cursor: pointer;
   }
-  .radio-option-group label:hover, .checkbox-option-group label:hover { border-color: #E3112E; transition: border-color 0.2s ease; }
+  .checkbox-option-group label:hover { border-color: #E3112E; transition: border-color 0.2s ease; }
 
   .other-input { display: none; margin-top: 10px; }
   .other-input.show { display: block; }
 
-  .step { display: none; }
-  .step.active { display: block; animation: fade .2s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .question-block { margin-bottom: 28px; }
+  .question-block:last-of-type { margin-bottom: 20px; }
 
-  .step-body > textarea { min-height: 160px; }
-  .step-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 8px; margin-top: 24px;
+  .conditional {
+    opacity: 0; visibility: hidden; max-height: 0; overflow: hidden; margin-bottom: 0 !important;
+    transition: opacity 0.3s ease, max-height 0.3s ease, visibility 0.3s ease, margin-bottom 0.3s ease;
   }
+  .conditional.show {
+    opacity: 1; visibility: visible; max-height: 2000px; margin-bottom: 28px !important;
+  }
+
   button {
-    padding: 12px 20px; border: 0; border-radius: 8px;
+    padding: 12px 24px; border: 0; border-radius: 8px;
     background: #E3112E; color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer;
   }
   button:hover:not(:disabled) { background: #c70f28; }
   button:disabled { background: #ccc; color: #666; cursor: not-allowed; }
-  button.secondary {
-    background: transparent; color: #6b7280; border: 1px solid #d0d5dd;
-  }
-  button.secondary:hover:not(:disabled) { background: #f5f5f5; color: #111; }
-  button.secondary[hidden] { display: none; }
-  .next-wrap { margin-left: auto; }
+  .form-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
 
-  .exit-msg, .cta-body {
+  .terminal {
     text-align: center; padding: 20px 8px;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 220px;
   }
-  .exit-msg h2, .cta-body h2 { margin: 0 0 10px; font-size: 1.4rem; }
-  .exit-msg p, .cta-body p { margin: 0 0 24px; color: #4b5563; line-height: 1.5; max-width: 360px; }
-  .cta-body p:last-of-type, .exit-msg p:last-of-type { margin-bottom: 24px; }
+  .terminal[hidden] { display: none; }
+  .terminal h2 { margin: 0 0 10px; font-size: 1.4rem; }
+  .terminal p { margin: 0 0 20px; color: #4b5563; line-height: 1.5; max-width: 360px; }
+  .cta-fine { font-size: .8rem; color: #6b7280; margin-bottom: 20px; }
   .cta-btn {
     display: inline-block; padding: 14px 28px; background: #E3112E; color: #fff;
     text-decoration: none; border-radius: 8px; font-weight: 600;
   }
   .cta-btn:hover { background: #c70f28; }
-  .cta-body .cta-fine { font-size: .8rem; color: #6b7280; margin-bottom: 20px; }
 </style>
 </head>
 <body>
   <div class="wrap">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 20px; display: block;" />
-    <h1>How do you run surveys?</h1>
-    <p class="lead">Tell us how you run surveys today, and what would make running one from Formspree useful.</p>
+    <h1>How do you collect information?</h1>
+    <p class="lead">Tell us how you collect information from customers today, and where the friction lives.</p>
     <div class="card">
-      <div class="progress" id="progress" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
       <form id="f" action="https://formspree.io/f/mrpgkgnv" method="POST">
         <input type="hidden" id="email" name="email" value="" />
         <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
 
-        <div class="step active" data-step="screener">
-          <div class="step-body">
-            <p class="question">How many surveys have you run in the past 12 months?</p>
-            <div class="radio-option-group">
-              <label><input type="radio" name="surveys_past_year" value="1" /> 1</label>
-              <label><input type="radio" name="surveys_past_year" value="2-4" /> 2–4</label>
-              <label><input type="radio" name="surveys_past_year" value="5+" /> 5+</label>
-              <label><input type="radio" name="surveys_past_year" value="None" /> None</label>
-            </div>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back" hidden>Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="exit">
-          <div class="step-body exit-msg">
-            <h2>Thanks for stopping by</h2>
-              <p>We're specifically looking to hear from folks who've run a survey in the past year. But, we appreciate you clicking through.</p>
-          </div>
-        </div>
-
-        <div class="step" data-step="purpose">
-          <div class="step-body">
-            <p class="question">What was the survey for?</p>
-            <p class="hint">In your own words. For example: catering feedback, conference exit poll, onboarding NPS.</p>
-            <textarea name="survey_purpose" placeholder="In your own words"></textarea>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="distribution">
-          <div class="step-body">
-            <p class="question">How did you distribute the survey, and to whom?</p>
-            <p class="hint">Pick all that apply.</p>
+        <div id="questions">
+          <div class="question-block">
+            <p class="question">In addition to Formspree, what other tools do you use to collect information from your customers or leads?</p>
+            <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
-              <label><input type="checkbox" name="distribution" value="Emailed a link to our customers" /> Emailed a link to our customers</label>
-              <label><input type="checkbox" name="distribution" value="Embedded inside our product or app" /> Embedded inside our product or app</label>
-              <label><input type="checkbox" name="distribution" value="Emailed a link to prospects or a marketing list" /> Emailed a link to prospects or a marketing list</label>
-              <label><input type="checkbox" name="distribution" value="Posted on our website and/or socials" /> Posted on our website and/or socials</label>
-              <label><input type="checkbox" name="distribution" value="Shared the link privately with a specific group" /> Shared the link privately with a specific group</label>
-              <label><input type="checkbox" name="distribution" value="Sent to internal team" /> Sent to internal team</label>
-              <label><input type="checkbox" name="distribution" value="Other" id="dist-other-cb" /> Other</label>
+              <label><input type="checkbox" name="other_tools" value="Google Forms" /> Google Forms</label>
+              <label><input type="checkbox" name="other_tools" value="Typeform" /> Typeform</label>
+              <label><input type="checkbox" name="other_tools" value="Jotform" /> Jotform</label>
+              <label><input type="checkbox" name="other_tools" value="Tally" /> Tally</label>
+              <label><input type="checkbox" name="other_tools" value="SurveyMonkey" /> SurveyMonkey</label>
+              <label><input type="checkbox" name="other_tools" value="HubSpot or Salesforce forms" /> HubSpot or Salesforce forms</label>
+              <label><input type="checkbox" name="other_tools" value="Airtable or Notion forms" /> Airtable or Notion forms</label>
+              <label><input type="checkbox" name="other_tools" value="Custom-coded forms" /> Custom-coded forms</label>
+              <label><input type="checkbox" name="other_tools" value="None, just Formspree" /> None, just Formspree</label>
+              <label><input type="checkbox" name="other_tools" value="Other" id="tools-other-cb" /> Other</label>
             </div>
-            <input type="text" id="dist-other-input" name="distribution_other" class="other-input" placeholder="Please specify" />
+            <input type="text" id="tools-other-input" name="other_tools_other" class="other-input" placeholder="Please specify" />
           </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
 
-        <div class="step" data-step="responses">
-          <div class="step-body">
-            <p class="question">How many responses did the survey get?</p>
-            <div class="radio-option-group">
-              <label><input type="radio" name="response_count" value="Under 10" /> Under 10</label>
-              <label><input type="radio" name="response_count" value="10-49" /> 10–49</label>
-              <label><input type="radio" name="response_count" value="50-199" /> 50–199</label>
-              <label><input type="radio" name="response_count" value="200-999" /> 200–999</label>
-              <label><input type="radio" name="response_count" value="1000+" /> 1,000+</label>
-              <label><input type="radio" name="response_count" value="Still open / don't know" /> Still open / don't know</label>
+          <div class="question-block">
+            <p class="question">What type of information are you collecting?</p>
+            <p class="hint">Select all that apply.</p>
+            <div class="checkbox-option-group">
+              <label><input type="checkbox" name="info_type" value="Leads" /> Leads</label>
+              <label><input type="checkbox" name="info_type" value="Customer feedback or surveys" id="info-feedback-cb" /> Customer feedback or surveys</label>
+              <label><input type="checkbox" name="info_type" value="Applications" /> Applications (job, program, admissions)</label>
+              <label><input type="checkbox" name="info_type" value="Orders or payments" /> Orders or payments</label>
+              <label><input type="checkbox" name="info_type" value="Contact requests" /> Contact requests</label>
+              <label><input type="checkbox" name="info_type" value="Event registrations or RSVPs" /> Event registrations or RSVPs</label>
+              <label><input type="checkbox" name="info_type" value="Other" id="info-other-cb" /> Other</label>
             </div>
+            <input type="text" id="info-other-input" name="info_type_other" class="other-input" placeholder="Please specify" />
           </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
 
-        <div class="step" data-step="build">
-          <div class="step-body">
-            <p class="question">What did you use to build your survey?</p>
-            <div class="radio-option-group">
-              <label><input type="radio" name="build_tool" value="Drag-and-drop builder" /> A drag-and-drop builder</label>
-              <label><input type="radio" name="build_tool" value="Coded it myself" /> Coded it myself</label>
-              <label><input type="radio" name="build_tool" value="AI" /> AI</label>
-              <label><input type="radio" name="build_tool" value="Other" id="build-other-radio" /> Other</label>
+          <div class="question-block conditional" id="q3-block">
+            <p class="question">What about running the survey or collecting the feedback did you find difficult?</p>
+            <p class="hint">Select all that apply.</p>
+            <div class="checkbox-option-group">
+              <label><input type="checkbox" name="difficulty" value="Designing good questions" /> Designing good questions</label>
+              <label><input type="checkbox" name="difficulty" value="Getting enough responses" /> Getting enough responses</label>
+              <label><input type="checkbox" name="difficulty" value="Distributing the survey" /> Distributing the survey</label>
+              <label><input type="checkbox" name="difficulty" value="Building the form itself" /> Building the form itself</label>
+              <label><input type="checkbox" name="difficulty" value="Analyzing the responses" /> Analyzing the responses</label>
+              <label><input type="checkbox" name="difficulty" value="Sharing results with the team" /> Sharing results with the team</label>
+              <label><input type="checkbox" name="difficulty" value="Following up with respondents" /> Following up with respondents</label>
+              <label><input type="checkbox" name="difficulty" value="Nothing was difficult" /> Nothing was difficult</label>
+              <label><input type="checkbox" name="difficulty" value="Other" id="diff-other-cb" /> Other</label>
             </div>
-            <input type="text" id="build-other-input" name="build_tool_other" class="other-input" placeholder="Please specify" />
+            <input type="text" id="diff-other-input" name="difficulty_other" class="other-input" placeholder="Please specify" />
           </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
+
+          <div class="form-actions">
+            <button type="button" id="submit-btn" disabled>Submit</button>
           </div>
         </div>
 
-        <div class="step" data-step="dnd_builder">
-          <div class="step-body">
-            <p class="question">Which drag-and-drop builder?</p>
-            <input type="text" name="dnd_builder" placeholder="e.g. Google Forms, Tally, Typeform, Jotform" />
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
+        <div id="booking-screen" class="terminal" hidden>
+          <h2>One more thing</h2>
+          <p>Jump on a 20-minute video call with us and we'll send you a <strong>$50 Amazon gift card</strong>.</p>
+          <p class="cta-fine">Video must be enabled. Offer void if we end the call early.</p>
+          <a class="cta-btn" href="https://savvycal.com/formspree/meet" target="_blank" rel="noopener">Book a time</a>
         </div>
 
-        <div class="step" data-step="coded_stack">
-          <div class="step-body">
-            <p class="question">What did you use to build it (framework, form backend, anything else)?</p>
-            <textarea name="coded_stack" placeholder="e.g. Next.js + Formspree, plain HTML on a Cloudflare page…"></textarea>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="ai_which">
-          <div class="step-body">
-            <p class="question">Which AI tool?</p>
-            <div class="radio-option-group">
-              <label><input type="radio" name="ai_tool" value="ChatGPT" /> ChatGPT</label>
-              <label><input type="radio" name="ai_tool" value="Claude" /> Claude</label>
-              <label><input type="radio" name="ai_tool" value="Gemini" /> Gemini</label>
-              <label><input type="radio" name="ai_tool" value="Copilot" /> Copilot</label>
-              <label><input type="radio" name="ai_tool" value="Cursor" /> Cursor</label>
-              <label><input type="radio" name="ai_tool" value="v0" /> v0</label>
-              <label><input type="radio" name="ai_tool" value="Lovable" /> Lovable</label>
-              <label><input type="radio" name="ai_tool" value="Other" id="ai-other-radio" /> Other</label>
-            </div>
-            <input type="text" id="ai-other-input" name="ai_tool_other" class="other-input" placeholder="Please specify" />
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="ai_prompt">
-          <div class="step-body">
-            <p class="question">What prompt did you give the AI Agent?</p>
-            <p class="hint">Paste the prompt if you have it.</p>
-            <textarea name="ai_prompt" placeholder="Paste your prompt or describe what you asked for"></textarea>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="hardest">
-          <div class="step-body">
-            <p class="question">What was the hardest part of running the survey, and how did you overcome it?</p>
-            <textarea name="hardest_part"></textarea>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="handling">
-          <div class="step-body">
-            <p class="question">What did you do with the responses afterward?</p>
-            <textarea name="responses_handling"></textarea>
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="cta">
-          <div class="step-body cta-body">
-            <h2>One more thing</h2>
-            <p>Jump on a 20-minute video call with us and we'll send you a <strong>$50 Amazon gift card</strong>.</p>
-            <p class="cta-fine">Video must be enabled. Offer void if we end the call early.</p>
-            <a class="cta-btn" href="https://savvycal.com/formspree/chat-about-surveys" target="_blank" rel="noopener">Book a time</a>
-          </div>
-        </div>
-
-        <div class="step" data-step="thanks">
-          <div class="step-body exit-msg">
-            <h2>Thanks for sharing</h2>
-            <p>Your answers help us figure out what to build next.</p>
-          </div>
+        <div id="thanks-screen" class="terminal" hidden>
+          <h2>Thanks for sharing</h2>
+          <p>Your answers help us figure out what to build next.</p>
         </div>
       </form>
     </div>
@@ -309,218 +179,66 @@
   if (ajsUid) document.getElementById("ajs_uid").value = ajsUid;
 
   const form = document.getElementById('f');
-  const stepEls = {};
-  document.querySelectorAll('.step').forEach(s => { stepEls[s.dataset.step] = s; });
+  const questionsEl = document.getElementById('questions');
+  const bookingEl = document.getElementById('booking-screen');
+  const thanksEl = document.getElementById('thanks-screen');
+  const submitBtn = document.getElementById('submit-btn');
 
-  const progressBar = document.getElementById('progress-bar');
-  const progressEl = document.getElementById('progress');
-  const stepProgress = {
-    screener: 8,
-    purpose: 20,
-    distribution: 34,
-    responses: 48,
-    build: 60,
-    dnd_builder: 72,
-    coded_stack: 72,
-    ai_which: 70,
-    ai_prompt: 80,
-    hardest: 88,
-    handling: 96,
-    cta: 100,
-    thanks: 100,
-    exit: 0,
-  };
+  const q3Block = document.getElementById('q3-block');
+  const infoFeedbackCb = document.getElementById('info-feedback-cb');
 
-  const history = [];
-  let current = 'screener';
+  const otherPairs = [
+    ['tools-other-cb', 'tools-other-input'],
+    ['info-other-cb', 'info-other-input'],
+    ['diff-other-cb', 'diff-other-input'],
+  ].map(([cbId, inputId]) => ({
+    cb: document.getElementById(cbId),
+    input: document.getElementById(inputId),
+  }));
 
-  function showStep(name) {
-    Object.values(stepEls).forEach(s => s.classList.toggle('active', s.dataset.step === name));
-    current = name;
-    const step = stepEls[name];
-    if (!step) return;
-    const backBtn = step.querySelector('.back');
-    if (backBtn) backBtn.hidden = history.length === 0;
-    const focusable = step.querySelector('input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]), textarea');
-    if (focusable) setTimeout(() => focusable.focus(), 60);
-    const pct = stepProgress[name] ?? 0;
-    progressBar.style.width = pct + '%';
-    progressEl.style.display = name === 'exit' ? 'none' : 'block';
-  }
-
-  function goNext(nextName) {
-    if (!nextName) return;
-    history.push(current);
-    showStep(nextName);
-  }
-  function goBack() {
-    const prev = history.pop();
-    if (prev) showStep(prev);
-  }
-
-  document.querySelectorAll('.back').forEach(b => b.addEventListener('click', goBack));
-
-  function val(name) {
-    const el = document.querySelector(`[name="${name}"]:checked`);
-    return el ? el.value : null;
-  }
-  function textVal(name) {
-    const el = form.querySelector(`[name="${name}"]`);
-    return el ? el.value.trim() : '';
-  }
-
-  function bindStep(name, validate, computeNext, onEnter) {
-    const step = stepEls[name];
-    const nextBtn = step.querySelector('.next');
-    if (!nextBtn) return;
-    const refresh = () => { nextBtn.disabled = !validate(); };
-    step.querySelectorAll('input, textarea').forEach(el => {
-      el.addEventListener('input', refresh);
-      el.addEventListener('change', refresh);
+  otherPairs.forEach(({ cb, input }) => {
+    cb.addEventListener('change', () => {
+      input.classList.toggle('show', cb.checked);
+      if (!cb.checked) input.value = '';
+      updateSubmit();
     });
-    if (onEnter) onEnter(refresh);
-    refresh();
-    nextBtn.addEventListener('click', async () => {
-      if (!validate()) return;
-      const next = computeNext();
-      if (next === '__submit__') {
-        nextBtn.disabled = true;
-        const ok = await submitForm();
-        nextBtn.disabled = false;
-        if (ok) goNext(isQualified() ? 'cta' : 'thanks');
-      } else {
-        goNext(next);
-      }
-    });
+  });
+
+  infoFeedbackCb.addEventListener('change', () => {
+    q3Block.classList.toggle('show', infoFeedbackCb.checked);
+    if (!infoFeedbackCb.checked) {
+      q3Block.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+      const diffOtherInput = document.getElementById('diff-other-input');
+      diffOtherInput.value = '';
+      diffOtherInput.classList.remove('show');
+    }
+    updateSubmit();
+  });
+
+  form.addEventListener('input', updateSubmit);
+  form.addEventListener('change', updateSubmit);
+
+  function anyChecked(name) {
+    return form.querySelectorAll(`input[name="${name}"]:checked`).length > 0;
+  }
+  function otherOk({ cb, input }) {
+    return !cb.checked || input.value.trim().length > 0;
   }
 
-  function isQualified() {
-    const rc = val('response_count');
-    return ['10-49', '50-199', '200-999', '1000+'].includes(rc);
+  function updateSubmit() {
+    const [toolsPair, infoPair, diffPair] = otherPairs;
+    const q1Ok = anyChecked('other_tools') && otherOk(toolsPair);
+    const q2Ok = anyChecked('info_type') && otherOk(infoPair);
+    let q3Ok = true;
+    if (infoFeedbackCb.checked) {
+      q3Ok = anyChecked('difficulty') && otherOk(diffPair);
+    }
+    submitBtn.disabled = !(q1Ok && q2Ok && q3Ok);
   }
 
-  // Screener
-  bindStep('screener',
-    () => !!val('surveys_past_year'),
-    () => val('surveys_past_year') === 'None' ? 'exit' : 'purpose'
-  );
-
-  // Purpose
-  bindStep('purpose',
-    () => textVal('survey_purpose').length > 0,
-    () => 'distribution'
-  );
-
-  // Distribution
-  const distOtherCb = document.getElementById('dist-other-cb');
-  const distOtherInput = document.getElementById('dist-other-input');
-  bindStep('distribution',
-    () => {
-      const anyChecked = form.querySelectorAll('input[name="distribution"]:checked').length > 0;
-      const otherOk = !distOtherCb.checked || distOtherInput.value.trim().length > 0;
-      return anyChecked && otherOk;
-    },
-    () => 'responses',
-    (refresh) => {
-      distOtherCb.addEventListener('change', () => {
-        distOtherInput.classList.toggle('show', distOtherCb.checked);
-        if (!distOtherCb.checked) distOtherInput.value = '';
-        refresh();
-      });
-    }
-  );
-
-  // Responses
-  bindStep('responses',
-    () => !!val('response_count'),
-    () => 'build'
-  );
-
-  // Build tool
-  const buildOtherRadio = document.getElementById('build-other-radio');
-  const buildOtherInput = document.getElementById('build-other-input');
-  bindStep('build',
-    () => {
-      const b = val('build_tool');
-      if (!b) return false;
-      if (b === 'Other') return buildOtherInput.value.trim().length > 0;
-      return true;
-    },
-    () => {
-      const b = val('build_tool');
-      if (b === 'Drag-and-drop builder') return 'dnd_builder';
-      if (b === 'Coded it myself') return 'coded_stack';
-      if (b === 'AI') return 'ai_which';
-      return 'hardest';
-    },
-    (refresh) => {
-      document.querySelectorAll('input[name="build_tool"]').forEach(r => {
-        r.addEventListener('change', () => {
-          const isOther = r.value === 'Other' && r.checked;
-          buildOtherInput.classList.toggle('show', isOther);
-          if (!isOther) buildOtherInput.value = '';
-          refresh();
-        });
-      });
-    }
-  );
-
-  // DnD sub-question
-  bindStep('dnd_builder',
-    () => textVal('dnd_builder').length > 0,
-    () => 'hardest'
-  );
-
-  // Coded sub-question
-  bindStep('coded_stack',
-    () => textVal('coded_stack').length > 0,
-    () => 'hardest'
-  );
-
-  // AI which
-  const aiOtherRadio = document.getElementById('ai-other-radio');
-  const aiOtherInput = document.getElementById('ai-other-input');
-  bindStep('ai_which',
-    () => {
-      const t = val('ai_tool');
-      if (!t) return false;
-      if (t === 'Other') return aiOtherInput.value.trim().length > 0;
-      return true;
-    },
-    () => 'ai_prompt',
-    (refresh) => {
-      document.querySelectorAll('input[name="ai_tool"]').forEach(r => {
-        r.addEventListener('change', () => {
-          const isOther = r.value === 'Other' && r.checked;
-          aiOtherInput.classList.toggle('show', isOther);
-          if (!isOther) aiOtherInput.value = '';
-          refresh();
-        });
-      });
-    }
-  );
-
-  // AI prompt
-  bindStep('ai_prompt',
-    () => textVal('ai_prompt').length > 0,
-    () => 'hardest'
-  );
-
-  // Hardest
-  bindStep('hardest',
-    () => textVal('hardest_part').length > 0,
-    () => 'handling'
-  );
-
-  // Handling — last question. Submit on Continue, then reveal CTA.
-  const handlingNext = stepEls['handling'].querySelector('.next');
-  handlingNext.textContent = 'Submit';
-  bindStep('handling',
-    () => textVal('responses_handling').length > 0,
-    () => '__submit__'
-  );
-
-  async function submitForm() {
+  submitBtn.addEventListener('click', async () => {
+    if (submitBtn.disabled) return;
+    submitBtn.disabled = true;
     const data = new FormData(form);
     try {
       const res = await fetch(form.action, {
@@ -528,22 +246,20 @@
         body: data,
         headers: { Accept: 'application/json' },
       });
-      if (res.ok) return true;
-      alert('Submission failed. Please try again.');
-      return false;
+      if (res.ok) {
+        questionsEl.hidden = true;
+        if (infoFeedbackCb.checked) {
+          bookingEl.hidden = false;
+        } else {
+          thanksEl.hidden = false;
+        }
+      } else {
+        alert('Submission failed. Please try again.');
+        submitBtn.disabled = false;
+      }
     } catch {
       alert('Network error. Please try again.');
-      return false;
-    }
-  }
-
-  // Prevent Enter inside inputs from submitting the raw form
-  form.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-      const step = stepEls[current];
-      const nextBtn = step && step.querySelector('.next');
-      if (nextBtn && !nextBtn.disabled) nextBtn.click();
+      submitBtn.disabled = false;
     }
   });
 </script>
