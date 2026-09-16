@@ -28,11 +28,19 @@
     background: #fff; border-radius: 14px;
     box-shadow: 0 14px 40px rgba(0,0,0,.08); padding: 32px;
     border: 1px solid rgba(227,17,46,.12);
+    position: relative; overflow: hidden;
+  }
+  .progress {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #f3f4f6;
+  }
+  .progress-bar {
+    height: 100%; background: #E3112E; width: 0%;
+    transition: width 0.3s ease;
   }
   h1 { margin: 0 0 12px; font-size: 2rem; color: #111; text-align: center; }
   p.lead { margin: 0 0 24px; color: #33333380; font-size: .95rem; letter-spacing: 0.015em; line-height: 1.5; text-align: center; }
-  .question { font-weight: 600; font-size: 1.1rem; margin: 0 0 6px; color: #111; line-height: 1.35; }
-  .hint { margin: 0 0 12px; color: #6b7280; font-size: .85rem; }
+  .question { font-weight: 600; font-size: 1.15rem; margin: 0 0 6px; color: #111; line-height: 1.35; }
+  .hint { margin: 0 0 16px; color: #6b7280; font-size: .85rem; }
   input, textarea {
     width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px;
     font: inherit; background: #fff; color: #111;
@@ -55,31 +63,32 @@
   .other-input { display: none; margin-top: 10px; }
   .other-input.show { display: block; }
 
-  .question-block { margin-bottom: 28px; }
-  .question-block:last-of-type { margin-bottom: 20px; }
+  .step { display: none; }
+  .step.active { display: block; animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-  .conditional {
-    opacity: 0; visibility: hidden; max-height: 0; overflow: hidden; margin-bottom: 0 !important;
-    transition: opacity 0.3s ease, max-height 0.3s ease, visibility 0.3s ease, margin-bottom 0.3s ease;
+  .step-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px; margin-top: 24px;
   }
-  .conditional.show {
-    opacity: 1; visibility: visible; max-height: 2000px; margin-bottom: 28px !important;
-  }
-
   button {
-    padding: 12px 24px; border: 0; border-radius: 8px;
+    padding: 12px 20px; border: 0; border-radius: 8px;
     background: #E3112E; color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer;
   }
   button:hover:not(:disabled) { background: #c70f28; }
   button:disabled { background: #ccc; color: #666; cursor: not-allowed; }
-  .form-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+  button.secondary {
+    background: transparent; color: #6b7280; border: 1px solid #d0d5dd;
+  }
+  button.secondary:hover:not(:disabled) { background: #f5f5f5; color: #111; }
+  button.secondary[hidden] { display: none; }
+  .next-wrap { margin-left: auto; }
 
   .terminal {
     text-align: center; padding: 20px 8px;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 220px;
   }
-  .terminal[hidden] { display: none; }
   .terminal h2 { margin: 0 0 10px; font-size: 1.4rem; }
   .terminal p { margin: 0 0 20px; color: #4b5563; line-height: 1.5; max-width: 360px; }
   .cta-fine { font-size: .8rem; color: #6b7280; margin-bottom: 20px; }
@@ -96,12 +105,13 @@
     <h1>How do you collect information?</h1>
     <p class="lead">Tell us how you collect information from customers today, and where the friction lives.</p>
     <div class="card">
+      <div class="progress" id="progress" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
       <form id="f" action="https://formspree.io/f/mrpgkgnv" method="POST">
         <input type="hidden" id="email" name="email" value="" />
         <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
 
-        <div id="questions">
-          <div class="question-block">
+        <div class="step active" data-step="q1">
+          <div class="step-body">
             <p class="question">In addition to Formspree, what other tools do you use to collect information from your customers or leads?</p>
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
@@ -118,8 +128,14 @@
             </div>
             <input type="text" id="tools-other-input" name="other_tools_other" class="other-input" placeholder="Please specify" />
           </div>
+          <div class="step-nav">
+            <button type="button" class="secondary back" hidden>Back</button>
+            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
+          </div>
+        </div>
 
-          <div class="question-block">
+        <div class="step" data-step="q2">
+          <div class="step-body">
             <p class="question">What type of information are you collecting?</p>
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
@@ -133,8 +149,14 @@
             </div>
             <input type="text" id="info-other-input" name="info_type_other" class="other-input" placeholder="Please specify" />
           </div>
+          <div class="step-nav">
+            <button type="button" class="secondary back">Back</button>
+            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
+          </div>
+        </div>
 
-          <div class="question-block conditional" id="q3-block">
+        <div class="step" data-step="q3">
+          <div class="step-body">
             <p class="question">What about running the survey or collecting the feedback did you find difficult?</p>
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
@@ -150,22 +172,26 @@
             </div>
             <input type="text" id="diff-other-input" name="difficulty_other" class="other-input" placeholder="Please specify" />
           </div>
-
-          <div class="form-actions">
-            <button type="button" id="submit-btn" disabled>Submit</button>
+          <div class="step-nav">
+            <button type="button" class="secondary back">Back</button>
+            <div class="next-wrap"><button type="button" class="next" disabled>Submit</button></div>
           </div>
         </div>
 
-        <div id="booking-screen" class="terminal" hidden>
-          <h2>One more thing</h2>
-          <p>Jump on a 20-minute video call with us and we'll send you a <strong>$50 Amazon gift card</strong>.</p>
-          <p class="cta-fine">Video must be enabled. Offer void if we end the call early.</p>
-          <a class="cta-btn" href="https://savvycal.com/formspree/meet" target="_blank" rel="noopener">Book a time</a>
+        <div class="step" data-step="booking">
+          <div class="terminal">
+            <h2>One more thing</h2>
+            <p>Jump on a 20-minute video call with us and we'll send you a <strong>$50 Amazon gift card</strong>.</p>
+            <p class="cta-fine">Video must be enabled. Offer void if we end the call early.</p>
+            <a class="cta-btn" href="https://savvycal.com/formspree/meet" target="_blank" rel="noopener">Book a time</a>
+          </div>
         </div>
 
-        <div id="thanks-screen" class="terminal" hidden>
-          <h2>Thanks for sharing</h2>
-          <p>Your answers help us figure out what to build next.</p>
+        <div class="step" data-step="thanks">
+          <div class="terminal">
+            <h2>Thanks for sharing</h2>
+            <p>Your answers help us figure out what to build next.</p>
+          </div>
         </div>
       </form>
     </div>
@@ -179,66 +205,106 @@
   if (ajsUid) document.getElementById("ajs_uid").value = ajsUid;
 
   const form = document.getElementById('f');
-  const questionsEl = document.getElementById('questions');
-  const bookingEl = document.getElementById('booking-screen');
-  const thanksEl = document.getElementById('thanks-screen');
-  const submitBtn = document.getElementById('submit-btn');
+  const stepEls = {};
+  document.querySelectorAll('.step').forEach(s => { stepEls[s.dataset.step] = s; });
 
-  const q3Block = document.getElementById('q3-block');
-  const infoFeedbackCb = document.getElementById('info-feedback-cb');
+  const progressBar = document.getElementById('progress-bar');
+  const stepProgress = { q1: 20, q2: 55, q3: 85, booking: 100, thanks: 100 };
 
-  const otherPairs = [
-    ['tools-other-cb', 'tools-other-input'],
-    ['info-other-cb', 'info-other-input'],
-    ['diff-other-cb', 'diff-other-input'],
-  ].map(([cbId, inputId]) => ({
-    cb: document.getElementById(cbId),
-    input: document.getElementById(inputId),
-  }));
+  const history = [];
+  let current = 'q1';
 
-  otherPairs.forEach(({ cb, input }) => {
-    cb.addEventListener('change', () => {
-      input.classList.toggle('show', cb.checked);
-      if (!cb.checked) input.value = '';
-      updateSubmit();
-    });
-  });
+  function showStep(name) {
+    Object.values(stepEls).forEach(s => s.classList.toggle('active', s.dataset.step === name));
+    current = name;
+    const step = stepEls[name];
+    const backBtn = step.querySelector('.back');
+    if (backBtn) backBtn.hidden = history.length === 0;
+    progressBar.style.width = (stepProgress[name] ?? 0) + '%';
+  }
 
-  infoFeedbackCb.addEventListener('change', () => {
-    q3Block.classList.toggle('show', infoFeedbackCb.checked);
-    if (!infoFeedbackCb.checked) {
-      q3Block.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
-      const diffOtherInput = document.getElementById('diff-other-input');
-      diffOtherInput.value = '';
-      diffOtherInput.classList.remove('show');
-    }
-    updateSubmit();
-  });
-
-  form.addEventListener('input', updateSubmit);
-  form.addEventListener('change', updateSubmit);
+  function goNext(nextName) {
+    if (!nextName) return;
+    history.push(current);
+    showStep(nextName);
+  }
+  function goBack() {
+    const prev = history.pop();
+    if (prev) showStep(prev);
+  }
+  document.querySelectorAll('.back').forEach(b => b.addEventListener('click', goBack));
 
   function anyChecked(name) {
     return form.querySelectorAll(`input[name="${name}"]:checked`).length > 0;
   }
-  function otherOk({ cb, input }) {
+  function otherOk(cbId, inputId) {
+    const cb = document.getElementById(cbId);
+    const input = document.getElementById(inputId);
     return !cb.checked || input.value.trim().length > 0;
   }
-
-  function updateSubmit() {
-    const [toolsPair, infoPair, diffPair] = otherPairs;
-    const q1Ok = anyChecked('other_tools') && otherOk(toolsPair);
-    const q2Ok = anyChecked('info_type') && otherOk(infoPair);
-    let q3Ok = true;
-    if (infoFeedbackCb.checked) {
-      q3Ok = anyChecked('difficulty') && otherOk(diffPair);
-    }
-    submitBtn.disabled = !(q1Ok && q2Ok && q3Ok);
+  function bindOther(cbId, inputId, refresh) {
+    const cb = document.getElementById(cbId);
+    const input = document.getElementById(inputId);
+    cb.addEventListener('change', () => {
+      input.classList.toggle('show', cb.checked);
+      if (!cb.checked) input.value = '';
+      refresh();
+    });
   }
 
-  submitBtn.addEventListener('click', async () => {
-    if (submitBtn.disabled) return;
-    submitBtn.disabled = true;
+  function bindStep(name, validate, onNext, onEnter) {
+    const step = stepEls[name];
+    const nextBtn = step.querySelector('.next');
+    const refresh = () => { nextBtn.disabled = !validate(); };
+    step.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', refresh);
+      el.addEventListener('change', refresh);
+    });
+    if (onEnter) onEnter(refresh);
+    refresh();
+    nextBtn.addEventListener('click', () => {
+      if (!validate()) return;
+      onNext(nextBtn);
+    });
+  }
+
+  // Q1
+  bindStep('q1',
+    () => anyChecked('other_tools') && otherOk('tools-other-cb', 'tools-other-input'),
+    () => goNext('q2'),
+    (refresh) => bindOther('tools-other-cb', 'tools-other-input', refresh)
+  );
+
+  // Q2 — always says Continue so nothing leaks about which path they trigger
+  const infoFeedbackCb = document.getElementById('info-feedback-cb');
+  bindStep('q2',
+    () => anyChecked('info_type') && otherOk('info-other-cb', 'info-other-input'),
+    async (nextBtn) => {
+      if (infoFeedbackCb.checked) {
+        goNext('q3');
+      } else {
+        nextBtn.disabled = true;
+        const ok = await submitForm();
+        nextBtn.disabled = false;
+        if (ok) goNext('thanks');
+      }
+    },
+    (refresh) => bindOther('info-other-cb', 'info-other-input', refresh)
+  );
+
+  // Q3
+  bindStep('q3',
+    () => anyChecked('difficulty') && otherOk('diff-other-cb', 'diff-other-input'),
+    async (nextBtn) => {
+      nextBtn.disabled = true;
+      const ok = await submitForm();
+      nextBtn.disabled = false;
+      if (ok) goNext('booking');
+    },
+    (refresh) => bindOther('diff-other-cb', 'diff-other-input', refresh)
+  );
+
+  async function submitForm() {
     const data = new FormData(form);
     try {
       const res = await fetch(form.action, {
@@ -246,22 +312,14 @@
         body: data,
         headers: { Accept: 'application/json' },
       });
-      if (res.ok) {
-        questionsEl.hidden = true;
-        if (infoFeedbackCb.checked) {
-          bookingEl.hidden = false;
-        } else {
-          thanksEl.hidden = false;
-        }
-      } else {
-        alert('Submission failed. Please try again.');
-        submitBtn.disabled = false;
-      }
+      if (res.ok) return true;
+      alert('Submission failed. Please try again.');
+      return false;
     } catch {
       alert('Network error. Please try again.');
-      submitBtn.disabled = false;
+      return false;
     }
-  });
+  }
 </script>
 </body>
 </html>
