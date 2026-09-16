@@ -180,9 +180,8 @@
 
         <div class="step" data-step="booking">
           <div class="terminal">
-            <h2>One more thing</h2>
-            <p>Jump on a 20-minute video call with us and we'll send you a <strong>$50 Amazon gift card</strong>.</p>
-            <p class="cta-fine">Video must be enabled. Offer void if we end the call early.</p>
+            <h2>Book your chat</h2>
+            <p>Grab a 30-minute slot below. We'll send your <strong>$50 Amazon gift card</strong> after the call.</p>
             <a class="cta-btn" href="https://savvycal.com/formspree/meet" target="_blank" rel="noopener">Book a time</a>
           </div>
         </div>
@@ -190,7 +189,7 @@
         <div class="step" data-step="thanks">
           <div class="terminal">
             <h2>Thanks for sharing</h2>
-            <p>Your answers help us figure out what to build next.</p>
+            <p>We'll reach out to book a call once the next batch of slots open up.</p>
           </div>
         </div>
       </form>
@@ -205,6 +204,9 @@
   if (ajsUid) document.getElementById("ajs_uid").value = ajsUid;
 
   const form = document.getElementById('f');
+  // Block ALL native form submissions. Every submit must go through submitForm() via a Next click.
+  form.addEventListener('submit', (e) => { e.preventDefault(); });
+
   const stepEls = {};
   document.querySelectorAll('.step').forEach(s => { stepEls[s.dataset.step] = s; });
 
