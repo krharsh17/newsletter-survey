@@ -12,7 +12,7 @@
 </head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>How do you collect information? | Formspree</title>
+<title>Are you using any of these tools? | Formspree</title>
 <link rel="icon" type="image/x-icon" href="https://formspree.io/img/favicon.ico" />
 <style>
   :root { color-scheme: light; }
@@ -102,7 +102,7 @@
 <body>
   <div class="wrap">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 20px; display: block;" />
-    <h1>How do you collect information?</h1>
+    <h1>Are you using any of these tools?</h1>
     <p class="lead">A few quick questions. Takes about a minute.</p>
     <div class="card">
       <div class="progress" id="progress" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
@@ -213,6 +213,15 @@
   const progressBar = document.getElementById('progress-bar');
   const stepProgress = { q1: 20, q2: 55, q3: 85, booking: 100, thanks: 100 };
 
+  // One-submission-per-browser lock. Value is the terminal step to restore ('booking' or 'thanks').
+  const SUBMITTED_KEY = 'formspree-mrpgkgnv-submitted';
+  function getSubmittedPath() {
+    try { return localStorage.getItem(SUBMITTED_KEY); } catch { return null; }
+  }
+  function markSubmitted(path) {
+    try { localStorage.setItem(SUBMITTED_KEY, path); } catch {}
+  }
+
   const history = [];
   let current = 'q1';
 
@@ -288,7 +297,7 @@
         nextBtn.disabled = true;
         const ok = await submitForm();
         nextBtn.disabled = false;
-        if (ok) goNext('thanks');
+        if (ok) { markSubmitted('thanks'); goNext('thanks'); }
       }
     },
     (refresh) => bindOther('info-other-cb', 'info-other-input', refresh)
@@ -301,10 +310,16 @@
       nextBtn.disabled = true;
       const ok = await submitForm();
       nextBtn.disabled = false;
-      if (ok) goNext('booking');
+      if (ok) { markSubmitted('booking'); goNext('booking'); }
     },
     (refresh) => bindOther('diff-other-cb', 'diff-other-input', refresh)
   );
+
+  // If this browser already submitted once, jump straight to the terminal they saw.
+  const already = getSubmittedPath();
+  if (already === 'booking' || already === 'thanks') {
+    showStep(already);
+  }
 
   async function submitForm() {
     const data = new FormData(form);
