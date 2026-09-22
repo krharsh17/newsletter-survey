@@ -45,7 +45,8 @@
     width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px;
     font: inherit; background: #fff; color: #111;
   }
-  input::placeholder { color: #8f8f8f; }
+  textarea { resize: vertical; min-height: 96px; }
+  input::placeholder, textarea::placeholder { color: #8f8f8f; }
   input:focus, textarea:focus {
     border-color: #E3112E;
     outline: none;
@@ -91,42 +92,49 @@
   }
   .terminal h2 { margin: 0 0 10px; font-size: 1.4rem; }
   .terminal p { margin: 0 0 20px; color: #4b5563; line-height: 1.5; max-width: 360px; }
-  .cta-fine { font-size: .8rem; color: #6b7280; margin-bottom: 20px; }
   .cta-btn {
     display: inline-block; padding: 14px 28px; background: #E3112E; color: #fff;
     text-decoration: none; border-radius: 8px; font-weight: 600;
   }
   .cta-btn:hover { background: #c70f28; }
+
+  .note { width: 100%; max-width: 420px; text-align: left; margin: 4px 0 20px; }
+  .note label { display: block; font-weight: 600; font-size: .95rem; margin-bottom: 6px; color: #111; }
+  .note .hint { margin: 0 0 8px; }
+  .note-status { font-size: .8rem; color: #6b7280; margin: 6px 0 0; min-height: 1em; }
 </style>
 </head>
 <body>
   <div class="wrap">
     <img src="formspree-header.png" alt="Formspree" style="width: 100%; max-width: 140px; margin: 0 auto 20px; display: block;" />
     <h1>Are you using any of these tools?</h1>
-    <p class="lead">A few quick questions. Takes about a minute.</p>
+    <p class="lead">Two quick questions. Takes about a minute.</p>
     <div class="card">
       <div class="progress" id="progress" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
       <form id="f" action="https://formspree.io/f/mrpgkgnv" method="POST">
         <input type="hidden" id="email" name="email" value="" />
         <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
+        <input type="hidden" id="qualified" name="qualified" value="" />
 
         <div class="step active" data-step="q1">
           <div class="step-body">
-            <p class="question">In addition to Formspree, what other tools do you use to collect information from your customers or leads?</p>
+            <p class="question">Which tools have you used to create forms in the past 6 months?</p>
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
-              <label><input type="checkbox" name="other_tools" value="Google Forms" /> Google Forms</label>
-              <label><input type="checkbox" name="other_tools" value="Typeform" /> Typeform</label>
-              <label><input type="checkbox" name="other_tools" value="Jotform" /> Jotform</label>
-              <label><input type="checkbox" name="other_tools" value="Tally" /> Tally</label>
-              <label><input type="checkbox" name="other_tools" value="SurveyMonkey" /> SurveyMonkey</label>
-              <label><input type="checkbox" name="other_tools" value="HubSpot or Salesforce forms" /> HubSpot or Salesforce forms</label>
-              <label><input type="checkbox" name="other_tools" value="Airtable or Notion forms" /> Airtable or Notion forms</label>
-              <label><input type="checkbox" name="other_tools" value="Custom-coded forms" /> Custom-coded forms</label>
-              <label><input type="checkbox" name="other_tools" value="None, just Formspree" /> None, just Formspree</label>
-              <label><input type="checkbox" name="other_tools" value="Other" id="tools-other-cb" /> Other</label>
+              <label><input type="checkbox" name="tools" value="Typeform" data-score="pass" /> Typeform</label>
+              <label><input type="checkbox" name="tools" value="Jotform" data-score="pass" /> Jotform</label>
+              <label><input type="checkbox" name="tools" value="Google Forms" data-score="pass" /> Google Forms</label>
+              <label><input type="checkbox" name="tools" value="Tally" data-score="pass" /> Tally</label>
+              <label><input type="checkbox" name="tools" value="Fillout" data-score="pass" /> Fillout</label>
+              <label><input type="checkbox" name="tools" value="Youform" data-score="pass" /> Youform</label>
+              <label><input type="checkbox" name="tools" value="SurveyMonkey" data-score="pass" /> SurveyMonkey</label>
+              <label><input type="checkbox" name="tools" value="HubSpot or Salesforce forms" data-score="pass" /> HubSpot or Salesforce forms</label>
+              <label><input type="checkbox" name="tools" value="Formspree" data-score="neutral" /> Formspree</label>
+              <label><input type="checkbox" name="tools" value="Custom-coded forms" data-score="neutral" /> Custom-coded forms</label>
+              <label><input type="checkbox" name="tools" value="Other" data-score="neutral" id="tools-other-cb" /> Other</label>
+              <label><input type="checkbox" name="tools" value="I haven't created a form in the past 6 months" data-score="fail" /> I haven't created a form in the past 6 months</label>
             </div>
-            <input type="text" id="tools-other-input" name="other_tools_other" class="other-input" placeholder="Please specify" />
+            <input type="text" id="tools-other-input" name="tools_other" class="other-input" placeholder="Please specify" />
           </div>
           <div class="step-nav">
             <button type="button" class="secondary back" hidden>Back</button>
@@ -136,43 +144,13 @@
 
         <div class="step" data-step="q2">
           <div class="step-body">
-            <p class="question">What type of information are you collecting?</p>
+            <p class="question">How do people get access to your forms?</p>
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
-              <label><input type="checkbox" name="info_type" value="Leads" /> Leads</label>
-              <label><input type="checkbox" name="info_type" value="Customer feedback" id="info-feedback-cb" /> Customer feedback</label>
-              <label><input type="checkbox" name="info_type" value="Surveys" id="info-surveys-cb" /> Surveys</label>
-              <label><input type="checkbox" name="info_type" value="Applications" /> Applications (job, program, admissions)</label>
-              <label><input type="checkbox" name="info_type" value="Client intake" /> Client intake</label>
-              <label><input type="checkbox" name="info_type" value="Orders or payments" /> Orders or payments</label>
-              <label><input type="checkbox" name="info_type" value="Contact form messages" /> Contact form messages</label>
-              <label><input type="checkbox" name="info_type" value="Event registrations or RSVPs" /> Event registrations or RSVPs</label>
-              <label><input type="checkbox" name="info_type" value="Other" id="info-other-cb" /> Other</label>
+              <label><input type="checkbox" name="access" value="I send them a link (email, text, Slack, etc.)" data-score="pass" /> I send them a link (email, text, Slack, etc.)</label>
+              <label><input type="checkbox" name="access" value="It's part of a workflow after someone buys, signs up, or books" data-score="pass" /> It's part of a workflow after someone buys, signs up, or books</label>
+              <label><input type="checkbox" name="access" value="Visitors find it on my website" data-score="neutral" /> Visitors find it on my website</label>
             </div>
-            <input type="text" id="info-other-input" name="info_type_other" class="other-input" placeholder="Please specify" />
-          </div>
-          <div class="step-nav">
-            <button type="button" class="secondary back">Back</button>
-            <div class="next-wrap"><button type="button" class="next" disabled>Continue</button></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="q3">
-          <div class="step-body">
-            <p class="question">What about running the survey or collecting the feedback did you find difficult?</p>
-            <p class="hint">Select all that apply.</p>
-            <div class="checkbox-option-group">
-              <label><input type="checkbox" name="difficulty" value="Designing good questions" /> Designing good questions</label>
-              <label><input type="checkbox" name="difficulty" value="Getting enough responses" /> Getting enough responses</label>
-              <label><input type="checkbox" name="difficulty" value="Distributing the survey" /> Distributing the survey</label>
-              <label><input type="checkbox" name="difficulty" value="Building the form itself" /> Building the form itself</label>
-              <label><input type="checkbox" name="difficulty" value="Analyzing the responses" /> Analyzing the responses</label>
-              <label><input type="checkbox" name="difficulty" value="Sharing results with the team" /> Sharing results with the team</label>
-              <label><input type="checkbox" name="difficulty" value="Following up with respondents" /> Following up with respondents</label>
-              <label><input type="checkbox" name="difficulty" value="Nothing was difficult" /> Nothing was difficult</label>
-              <label><input type="checkbox" name="difficulty" value="Other" id="diff-other-cb" /> Other</label>
-            </div>
-            <input type="text" id="diff-other-input" name="difficulty_other" class="other-input" placeholder="Please specify" />
           </div>
           <div class="step-nav">
             <button type="button" class="secondary back">Back</button>
@@ -184,7 +162,13 @@
           <div class="terminal">
             <h2>Book your chat</h2>
             <p>Grab a 30-minute slot below. We'll send your <strong>$50 Amazon gift card</strong> after the call.</p>
-            <a class="cta-btn" href="https://savvycal.com/formspree/chat-about-surveys" target="_blank" rel="noopener">Book a time</a>
+            <div class="note">
+              <label for="last-form">Optional: tell us about the last form you sent to someone.</label>
+              <p class="hint">What was it for, who filled it out, and how did they get it?</p>
+              <textarea id="last-form" name="last_form" placeholder="e.g. A post-event survey I emailed to 40 attendees."></textarea>
+              <p class="note-status" id="note-status"></p>
+            </div>
+            <a class="cta-btn" id="book-btn" href="https://savvycal.com/formspree/chat-about-surveys" target="_blank" rel="noopener">Book a time</a>
           </div>
         </div>
 
@@ -213,7 +197,7 @@
   document.querySelectorAll('.step').forEach(s => { stepEls[s.dataset.step] = s; });
 
   const progressBar = document.getElementById('progress-bar');
-  const stepProgress = { q1: 20, q2: 55, q3: 85, booking: 100, thanks: 100 };
+  const stepProgress = { q1: 30, q2: 70, booking: 100, thanks: 100 };
 
   // One-submission-per-browser lock. Value is the terminal step to restore ('booking' or 'thanks').
   const SUBMITTED_KEY = 'formspree-mrpgkgnv-submitted';
@@ -265,6 +249,14 @@
     });
   }
 
+  // Scoring: a question passes if at least one "pass" option is checked and no "fail"
+  // option is checked. Neutral options never count toward passing. Nothing checked fails.
+  function questionPasses(name) {
+    const checked = [...form.querySelectorAll(`input[name="${name}"]:checked`)];
+    if (checked.some(el => el.dataset.score === 'fail')) return false;
+    return checked.some(el => el.dataset.score === 'pass');
+  }
+
   function bindStep(name, validate, onNext, onEnter) {
     const step = stepEls[name];
     const nextBtn = step.querySelector('.next');
@@ -281,42 +273,27 @@
     });
   }
 
-  // Q1
+  // Q1 — always Continue so nothing leaks about pass/fail
   bindStep('q1',
-    () => anyChecked('other_tools') && otherOk('tools-other-cb', 'tools-other-input'),
+    () => anyChecked('tools') && otherOk('tools-other-cb', 'tools-other-input'),
     () => goNext('q2'),
     (refresh) => bindOther('tools-other-cb', 'tools-other-input', refresh)
   );
 
-  // Q2 — always says Continue so nothing leaks about which path they trigger
-  const infoFeedbackCb = document.getElementById('info-feedback-cb');
-  const infoSurveysCb = document.getElementById('info-surveys-cb');
-  const feedbackPathTriggered = () => infoFeedbackCb.checked || infoSurveysCb.checked;
+  // Q2 — submit, then route on combined score
   bindStep('q2',
-    () => anyChecked('info_type') && otherOk('info-other-cb', 'info-other-input'),
+    () => anyChecked('access'),
     async (nextBtn) => {
-      if (feedbackPathTriggered()) {
-        goNext('q3');
-      } else {
-        nextBtn.disabled = true;
-        const ok = await submitForm();
-        nextBtn.disabled = false;
-        if (ok) { markSubmitted('thanks'); goNext('thanks'); }
-      }
-    },
-    (refresh) => bindOther('info-other-cb', 'info-other-input', refresh)
-  );
-
-  // Q3
-  bindStep('q3',
-    () => anyChecked('difficulty') && otherOk('diff-other-cb', 'diff-other-input'),
-    async (nextBtn) => {
+      const qualified = questionPasses('tools') && questionPasses('access');
+      document.getElementById('qualified').value = qualified ? 'yes' : 'no';
       nextBtn.disabled = true;
       const ok = await submitForm();
       nextBtn.disabled = false;
-      if (ok) { markSubmitted('booking'); goNext('booking'); }
-    },
-    (refresh) => bindOther('diff-other-cb', 'diff-other-input', refresh)
+      if (!ok) return;
+      const dest = qualified ? 'booking' : 'thanks';
+      markSubmitted(dest);
+      goNext(dest);
+    }
   );
 
   // If this browser already submitted once, jump straight to the terminal they saw.
@@ -327,6 +304,7 @@
 
   async function submitForm() {
     const data = new FormData(form);
+    data.delete('last_form'); // collected separately on the booking step
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -341,6 +319,35 @@
       return false;
     }
   }
+
+  // Optional note on the booking step. Sent as a second submission when they leave
+  // the textarea or click Book, so the main submission isn't held up by it.
+  const noteEl = document.getElementById('last-form');
+  const noteStatus = document.getElementById('note-status');
+  let lastSentNote = '';
+  async function sendNote() {
+    const text = noteEl.value.trim();
+    if (!text || text === lastSentNote) return;
+    const data = new FormData();
+    data.append('email', document.getElementById('email').value);
+    data.append('ajs_uid', document.getElementById('ajs_uid').value);
+    data.append('last_form', text);
+    data.append('_subject', 'Screener note: last form sent');
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+        keepalive: true,
+      });
+      if (res.ok) { lastSentNote = text; noteStatus.textContent = 'Saved.'; }
+      else { noteStatus.textContent = "Couldn't save your note. It's optional, so feel free to book anyway."; }
+    } catch {
+      noteStatus.textContent = "Couldn't save your note. It's optional, so feel free to book anyway.";
+    }
+  }
+  noteEl.addEventListener('blur', sendNote);
+  document.getElementById('book-btn').addEventListener('click', sendNote);
 </script>
 </body>
 </html>
