@@ -140,10 +140,12 @@
             <p class="hint">Select all that apply.</p>
             <div class="checkbox-option-group">
               <label><input type="checkbox" name="info_type" value="Leads" /> Leads</label>
-              <label><input type="checkbox" name="info_type" value="Customer feedback or surveys" id="info-feedback-cb" /> Customer feedback or surveys</label>
+              <label><input type="checkbox" name="info_type" value="Customer feedback" id="info-feedback-cb" /> Customer feedback</label>
+              <label><input type="checkbox" name="info_type" value="Surveys" id="info-surveys-cb" /> Surveys</label>
               <label><input type="checkbox" name="info_type" value="Applications" /> Applications (job, program, admissions)</label>
+              <label><input type="checkbox" name="info_type" value="Client intake" /> Client intake</label>
               <label><input type="checkbox" name="info_type" value="Orders or payments" /> Orders or payments</label>
-              <label><input type="checkbox" name="info_type" value="Contact requests" /> Contact requests</label>
+              <label><input type="checkbox" name="info_type" value="Contact form messages" /> Contact form messages</label>
               <label><input type="checkbox" name="info_type" value="Event registrations or RSVPs" /> Event registrations or RSVPs</label>
               <label><input type="checkbox" name="info_type" value="Other" id="info-other-cb" /> Other</label>
             </div>
@@ -288,10 +290,12 @@
 
   // Q2 — always says Continue so nothing leaks about which path they trigger
   const infoFeedbackCb = document.getElementById('info-feedback-cb');
+  const infoSurveysCb = document.getElementById('info-surveys-cb');
+  const feedbackPathTriggered = () => infoFeedbackCb.checked || infoSurveysCb.checked;
   bindStep('q2',
     () => anyChecked('info_type') && otherOk('info-other-cb', 'info-other-input'),
     async (nextBtn) => {
-      if (infoFeedbackCb.checked) {
+      if (feedbackPathTriggered()) {
         goNext('q3');
       } else {
         nextBtn.disabled = true;
