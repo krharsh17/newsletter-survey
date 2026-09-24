@@ -115,6 +115,7 @@
         <input type="hidden" id="email" name="email" value="" />
         <input type="hidden" id="ajs_uid" name="ajs_uid" value="" />
         <input type="hidden" id="qualified" name="qualified" value="" />
+        <input type="hidden" id="submission-id" name="submission_id" value="" />
 
         <div class="step active" data-step="q1">
           <div class="step-body">
@@ -201,12 +202,32 @@
 
   // One-submission-per-browser lock. Value is the terminal step to restore ('booking' or 'thanks').
   const SUBMITTED_KEY = 'formspree-mrpgkgnv-submitted';
+  const SUBMISSION_ID_KEY = 'formspree-mrpgkgnv-submission-id';
+  const LAST_NOTE_KEY = 'formspree-mrpgkgnv-last-note';
   function getSubmittedPath() {
     try { return localStorage.getItem(SUBMITTED_KEY); } catch { return null; }
   }
   function markSubmitted(path) {
     try { localStorage.setItem(SUBMITTED_KEY, path); } catch {}
   }
+  function newId() {
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+  }
+  function getOrCreateSubmissionId() {
+    try {
+      let id = localStorage.getItem(SUBMISSION_ID_KEY);
+      if (!id) { id = newId(); localStorage.setItem(SUBMISSION_ID_KEY, id); }
+      return id;
+    } catch { return newId(); }
+  }
+  function getPersistedLastNote() {
+    try { return localStorage.getItem(LAST_NOTE_KEY) || ''; } catch { return ''; }
+  }
+  function setPersistedLastNote(text) {
+    try { localStorage.setItem(LAST_NOTE_KEY, text); } catch {}
+  }
+  document.getElementById('submission-id').value = getOrCreateSubmissionId();
 
   const history = [];
   let current = 'q1';
@@ -324,13 +345,17 @@
   // the textarea or click Book, so the main submission isn't held up by it.
   const noteEl = document.getElementById('last-form');
   const noteStatus = document.getElementById('note-status');
-  let lastSentNote = '';
+  let lastSentNote = getPersistedLastNote();
+  let noteInFlight = false;
   async function sendNote() {
+    if (noteInFlight) return;
     const text = noteEl.value.trim();
     if (!text || text === lastSentNote) return;
+    noteInFlight = true;
     const data = new FormData();
     data.append('email', document.getElementById('email').value);
     data.append('ajs_uid', document.getElementById('ajs_uid').value);
+    data.append('submission_id', document.getElementById('submission-id').value);
     data.append('last_form', text);
     data.append('_subject', 'Screener note: last form sent');
     try {
@@ -340,10 +365,17 @@
         headers: { Accept: 'application/json' },
         keepalive: true,
       });
-      if (res.ok) { lastSentNote = text; noteStatus.textContent = 'Saved.'; }
-      else { noteStatus.textContent = "Couldn't save your note. It's optional, so feel free to book anyway."; }
+      if (res.ok) {
+        lastSentNote = text;
+        setPersistedLastNote(text);
+        noteStatus.textContent = 'Saved.';
+      } else {
+        noteStatus.textContent = "Couldn't save your note. It's optional, so feel free to book anyway.";
+      }
     } catch {
       noteStatus.textContent = "Couldn't save your note. It's optional, so feel free to book anyway.";
+    } finally {
+      noteInFlight = false;
     }
   }
   noteEl.addEventListener('blur', sendNote);
